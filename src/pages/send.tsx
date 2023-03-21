@@ -1,7 +1,7 @@
 import Head from "next/head";
 import { Layout } from "@/components/layout/Layout";
 
-export default function Home() {
+export default function Send() {
   return (
     <Layout>
       <Head>
@@ -12,7 +12,7 @@ export default function Home() {
       </Head>
 
       <div>
-        <h1 className="text-4xl font-bold">Inbox</h1>
+        <h1 className="text-4xl font-bold">Send message here</h1>
       </div>
     </Layout>
   );
