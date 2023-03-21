@@ -1,5 +1,6 @@
 import Head from "next/head";
 import { Layout } from "@/components/layout/Layout";
+import { SendForm } from "@/components/send/SendForm";
 
 export default function Send() {
   return (
@@ -12,7 +13,8 @@ export default function Send() {
       </Head>
 
       <div>
-        <h1 className="text-4xl font-bold">Send message here</h1>
+        <h1 className="text-4xl font-bold">Publicar mensaje</h1>
+        <SendForm />
       </div>
     </Layout>
   );
