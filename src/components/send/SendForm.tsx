@@ -2,10 +2,24 @@ import { useState } from "react";
 
 export const SendForm = () => {
   const [useKey, setUseKey] = useState(false);
+  const [formData, setFormData] = useState({});
 
   const onKeyToggle = (e: any) => {
     setUseKey((cur) => !cur);
   };
+
+  const handleInputChange = (e: any) => {
+    setFormData((cur) => ({
+      ...cur,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  const handleSubmit = async () => {
+    console.log("submit");
+  };
+
+  console.log(formData);
 
   return (
     <>
@@ -18,11 +32,13 @@ export const SendForm = () => {
                   Nombre
                 </label>
                 <input
+                  id="name"
                   type="text"
-                  name="first-name"
-                  id="first-name"
+                  name="name"
                   placeholder="Escribe tu nombre"
                   className="mt-2 block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-lg sm:leading-6"
+                  onChange={handleInputChange}
+                  required
                 />
               </div>
 
@@ -45,10 +61,11 @@ export const SendForm = () => {
                 <input
                   type="text"
                   disabled={!useKey}
-                  name="family-key"
-                  id="family-key"
+                  name="secret"
+                  id="secret"
                   placeholder="Escribe tu clave"
-                  className="mt-2 block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-lg sm:leading-6"
+                  onChange={handleInputChange}
+                  className="mt-2 block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-lg sm:leading-6 disabled:bg-slate-200 disabled:cursor-not-allowed"
                 />
               </div>
 
@@ -58,9 +75,10 @@ export const SendForm = () => {
                 </label>
                 <input
                   type="text"
-                  name="faimly-key"
-                  id="faimly-key"
+                  name="categories"
+                  id="categories"
                   placeholder={`Escribe etiquetas separadas por una ","`}
+                  onChange={handleInputChange}
                   className="mt-2 block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-lg sm:leading-6"
                 />
               </div>
@@ -72,9 +90,11 @@ export const SendForm = () => {
                 <textarea
                   name="message"
                   id="message"
+                  placeholder="Escribe tu mensaje"
+                  onChange={handleInputChange}
                   className="resize-none rounded-md border-0 mt-2 w-full p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-lg sm:leading-6"
                   rows="7"
-                ></textarea>
+                />
               </div>
             </div>
           </div>
