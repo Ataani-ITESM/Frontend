@@ -3,6 +3,7 @@ import { useState } from "react";
 import Head from "next/head";
 import { Layout } from "@/components/layout/Layout";
 import { SendForm } from "@/components/send/SendForm";
+import { OfflineQueue } from "@/components/send/OfflineQueue";
 
 export default function Send() {
   return (
@@ -17,6 +18,7 @@ export default function Send() {
       <div>
         <h1 className="text-4xl font-bold">Publicar mensaje</h1>
         <SendForm />
+        <OfflineQueue />
       </div>
     </Layout>
   );
