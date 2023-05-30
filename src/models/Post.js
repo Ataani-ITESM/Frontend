@@ -15,6 +15,10 @@ const PostSchema = new mongoose.Schema({
   message: {
     type: String,
   },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
 export default mongoose.models.Post || mongoose.model("Post", PostSchema);
