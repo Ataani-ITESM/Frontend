@@ -6,12 +6,23 @@ interface Post {
   id: number;
   name: string;
   message: string;
+  secret?: string;
   categories: string[];
   createdAt: string;
 }
 
 export default function Home() {
   const [posts, setPosts] = useState<Post[] | null>(null);
+  const [unlockedPosts, setUnlockedPosts] = useState<number[]>([]);
+  const [unlockInputs, setUnlockInputs] = useState<{ [key: number]: string }>(
+    {}
+  );
+
+  const handleUnlock = (postId: number, secret: string) => {
+    if (unlockInputs[postId] === secret) {
+      setUnlockedPosts([...unlockedPosts, postId]);
+    }
+  };
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -47,24 +58,53 @@ export default function Home() {
             posts.map((post) => (
               <div
                 key={post.id}
-                className="border-gray-200 border-2 rounded-md p-3 bg-white shadow-md hover:shadow-lg transition-shadow duration-300 ease-in-out"
+                className={`relative z-0 border-gray-200 border-2 rounded-md p-3 bg-white shadow-md hover:shadow-lg transition-shadow duration-300 ease-in-out `}
               >
-                {post.categories && (
-                  <div className="flex space-x-1 flex-wrap">
-                    {post.categories.map((category) => (
-                      <span
-                        key={category}
-                        className="inline-block bg-gray-200 rounded-full px-3 mb-2 text-sm font-semibold text-gray-700 mr-2"
-                      >
-                        {category}
-                      </span>
-                    ))}
+                {post.secret && !unlockedPosts.includes(post.id) && (
+                  <div className="absolute left-5 top-0 right-5 bottom-0 z-10 flex flex-col justify-center space-y-2">
+                    <input
+                      type="text"
+                      value={unlockInputs[post.id] || ""}
+                      onChange={(e) =>
+                        setUnlockInputs({
+                          ...unlockInputs,
+                          [post.id]: e.target.value,
+                        })
+                      }
+                      className="border-2 border-gray-300 px-1 rounded-md"
+                    />
+
+                    <button
+                      onClick={() => handleUnlock(post.id, post.secret)}
+                      className="bg-green-600 text-white rounded-md py-1 font-bold"
+                    >
+                      Desbloquear
+                    </button>
                   </div>
                 )}
-                <p className="text-lg font-semibold">{post.message}</p>
-                <p className="text-gray-500 text-sm mt-2">
-                  {post.name} | {new Date(post.createdAt).toLocaleString()}
-                </p>
+
+                <div
+                  className={`select-none ${
+                    post.secret && !unlockedPosts.includes(post.id) && "blur-lg"
+                  }`}
+                >
+                  {post.categories && (
+                    <div className="flex space-x-1 flex-wrap">
+                      {post.categories.map((category) => (
+                        <span
+                          key={category}
+                          className="inline-block bg-gray-200 rounded-full px-3 mb-2 text-sm font-semibold text-gray-700 mr-2"
+                        >
+                          {category}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                  <p className="text-lg font-semibold">{post.message}</p>
+                  <p className="text-gray-500 text-sm mt-2">
+                    {post.name} | {new Date(post.createdAt).toLocaleString()}
+                  </p>
+                </div>
               </div>
             ))}
         </div>
