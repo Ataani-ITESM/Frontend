@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import Head from "next/head";
 import { Layout } from "@/components/layout/Layout";
 import { SendForm } from "@/components/send/SendForm";

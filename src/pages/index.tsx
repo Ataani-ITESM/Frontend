@@ -1,35 +1,34 @@
 import Head from "next/head";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Layout } from "@/components/layout/Layout";
 
+interface Post {
+  id: number;
+  name: string;
+  message: string;
+  categories: string[];
+  createdAt: string;
+}
+
 export default function Home() {
-  const [messages, setMessages] = useState([
-    {
-      text: "Hello, world!",
-      author: "Jesus",
-      timestamp: "2022-03-22 10:30 AM",
-    },
-    {
-      text: "Nice weather today, isn't it?",
-      author: "Crossa",
-      timestamp: "2022-03-22 11:00 AM",
-    },
-    {
-      text: "Has anyone seen my keys?",
-      author: "Daniel",
-      timestamp: "2022-03-22 12:15 PM",
-    },
-    {
-      text: "Has anyone seen my keys?",
-      author: "Daniel",
-      timestamp: "2022-03-22 12:15 PM",
-    },
-    {
-      text: "Has anyone seen my keys?",
-      author: "Daniel",
-      timestamp: "2022-03-22 12:15 PM",
-    },
-  ]);
+  const [posts, setPosts] = useState<Post[] | null>(null);
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const response = await fetch("/api/posts");
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const { data } = await response.json();
+        setPosts(data);
+      } catch (error) {
+        console.error("Fetching posts failed", error);
+      }
+    };
+
+    fetchPosts();
+  }, []);
 
   return (
     <Layout>
@@ -44,17 +43,30 @@ export default function Home() {
         <h1 className="text-4xl font-bold">All messages</h1>
 
         <div className="cursor-pointer mt-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {messages.map((message, index) => (
-            <div
-              key={index}
-              className="border-gray-200 border-2 rounded-md p-4 bg-white shadow-md hover:shadow-lg transition-shadow duration-300 ease-in-out"
-            >
-              <p className="text-lg font-semibold">{message.text}</p>
-              <p className="text-gray-500 text-sm mt-2">
-                {message.author} | {message.timestamp}
-              </p>
-            </div>
-          ))}
+          {posts &&
+            posts.map((post) => (
+              <div
+                key={post.id}
+                className="border-gray-200 border-2 rounded-md p-3 bg-white shadow-md hover:shadow-lg transition-shadow duration-300 ease-in-out"
+              >
+                {post.categories && (
+                  <div className="flex space-x-1 flex-wrap">
+                    {post.categories.map((category) => (
+                      <span
+                        key={category}
+                        className="inline-block bg-gray-200 rounded-full px-3 mb-2 text-sm font-semibold text-gray-700 mr-2"
+                      >
+                        {category}
+                      </span>
+                    ))}
+                  </div>
+                )}
+                <p className="text-lg font-semibold">{post.message}</p>
+                <p className="text-gray-500 text-sm mt-2">
+                  {post.name} | {new Date(post.createdAt).toLocaleString()}
+                </p>
+              </div>
+            ))}
         </div>
       </div>
     </Layout>
