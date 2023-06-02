@@ -65,7 +65,6 @@ export const OfflineQueue = () => {
 
   useEffect(() => {
     if (isOnline && messages.length > 0) {
-      console.log("Online");
       setIsSyncing(true);
 
       const loadingtoast = toast.loading("Sincronizando mensajes...", {
@@ -73,14 +72,10 @@ export const OfflineQueue = () => {
       });
 
       getMessages().then(async (msgs) => {
-        console.log("Messages to be sent: ", msgs);
-
         // Here, you can add the code to send the messages to the server
 
-        console.log(messages);
         messages.forEach(async (message) => {
           // send the message to the server
-          console.log("Sending message to the server", message);
           fetch("/api/posts", {
             method: "POST",
             body: JSON.stringify(message),

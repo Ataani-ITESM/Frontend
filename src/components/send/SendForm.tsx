@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
-import { checkServerConnection } from "@/utils";
 import { openDB } from "idb";
 import { v4 as uuidv4 } from "uuid";
 
@@ -87,7 +86,6 @@ export const SendForm = () => {
         });
     }
 
-    alert(formData);
     setLoading(false); // Set loading to false when form is submitted
     setFormData({});
   };

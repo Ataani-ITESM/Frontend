@@ -7,7 +7,6 @@ self.addEventListener("install", (event) => {
         "/send.html",
         "/message/index.html",
       ];
-      console.log("Caching URLs:", urlsToCache);
       return cache.addAll(urlsToCache).catch((error) => {
         console.error("Failed to cache:", error);
       });
