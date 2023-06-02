@@ -47,12 +47,20 @@ export const OfflineQueue = () => {
   }, []);
 
   useEffect(() => {
-    const checkConnection = async () => {
-      const connected = await checkServerConnection("/api/hello");
-      setIsOnline(connected);
+    const handleOnlineStatusChange = () => {
+      setIsOnline(navigator.onLine);
     };
 
-    checkConnection();
+    window.addEventListener("online", handleOnlineStatusChange);
+    window.addEventListener("offline", handleOnlineStatusChange);
+
+    // initial online status
+    setIsOnline(navigator.onLine);
+
+    return () => {
+      window.removeEventListener("online", handleOnlineStatusChange);
+      window.removeEventListener("offline", handleOnlineStatusChange);
+    };
   }, []);
 
   useEffect(() => {
