@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { checkServerConnection } from "@/utils";
+import { openDB } from "idb";
+import { v4 as uuidv4 } from "uuid";
 
 export const SendForm = () => {
   const [useKey, setUseKey] = useState(false);
@@ -24,12 +26,20 @@ export const SendForm = () => {
   };
 
   useEffect(() => {
-    const checkConnection = async () => {
-      const connected = await checkServerConnection("/api/hello");
-      setIsOnline(connected);
+    const handleOnlineStatusChange = () => {
+      setIsOnline(navigator.onLine);
     };
 
-    checkConnection();
+    window.addEventListener("online", handleOnlineStatusChange);
+    window.addEventListener("offline", handleOnlineStatusChange);
+
+    // initial online status
+    setIsOnline(navigator.onLine);
+
+    return () => {
+      window.removeEventListener("online", handleOnlineStatusChange);
+      window.removeEventListener("offline", handleOnlineStatusChange);
+    };
   }, []);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -38,21 +48,27 @@ export const SendForm = () => {
 
     if (!isOnline) {
       // open a database and create an object store
-      // const db = await openDB("messagesDB", 1, {
-      //   upgrade(db) {
-      //     db.createObjectStore("messages");
-      //   },
-      // });
+      const db = await openDB("messagesDB", 1, {
+        upgrade(db) {
+          db.createObjectStore("messages", { autoIncrement: true });
+        },
+      });
 
-      // // add the message to the store
-      // await db.add("messages", formData);
+      console.log("adding message to the store", formData);
 
-      // // send a message to the service worker
-      // navigator.serviceWorker.controller?.postMessage("New message added");
+      // add the message to the store
+      const id = uuidv4();
+      await db.add("messages", { ...formData, id }, id);
 
-      // toast.success("Mensaje agregado a la cola");
-      // setLoading(false); // Set loading to false when form is submitted
-      // setFormData({});
+      // create a broadcast channel
+      const broadcastChannel = new BroadcastChannel("messagesDB");
+
+      // send a message to the channel
+      broadcastChannel.postMessage("New message added");
+
+      toast.success("Mensaje agregado a la cola");
+      setLoading(false); // Set loading to false when form is submitted
+      setFormData({});
       return;
     } else {
       fetch("api/posts", {

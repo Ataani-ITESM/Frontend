@@ -1,7 +1,7 @@
 import { openDB } from "idb";
 import { QuestionMarkCircleIcon } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
-import { checkServerConnection } from "@/utils";
+import { toast } from "react-hot-toast";
 
 export const OfflineQueue = () => {
   const [messages, setMessages] = useState<any[]>([]);
@@ -12,7 +12,7 @@ export const OfflineQueue = () => {
     // open a database and create an object store
     const db = await openDB("messagesDB", 1, {
       upgrade(db) {
-        db.createObjectStore("messages");
+        db.createObjectStore("messages", { autoIncrement: true });
       },
     });
 
@@ -64,17 +64,54 @@ export const OfflineQueue = () => {
   }, []);
 
   useEffect(() => {
-    if (isOnline) {
+    if (isOnline && messages.length > 0) {
+      console.log("Online");
       setIsSyncing(true);
+
+      const loadingtoast = toast.loading("Sincronizando mensajes...", {
+        position: "bottom-center",
+      });
 
       getMessages().then(async (msgs) => {
         console.log("Messages to be sent: ", msgs);
 
         // Here, you can add the code to send the messages to the server
 
-        const db = await openDB("messagesDB", 1);
-        await db.clear("messages");
+        console.log(messages);
+        messages.forEach(async (message) => {
+          // send the message to the server
+          console.log("Sending message to the server", message);
+          fetch("/api/posts", {
+            method: "POST",
+            body: JSON.stringify(message),
+            headers: {
+              "Content-Type": "application/json",
+            },
+          })
+            .then(async (res) => {
+              // if the message is sent successfully, remove it from the store
+              if (res.status === 201) {
+                const db = await openDB("messagesDB", 1);
+                await db.delete("messages", message.id);
 
+                // update the messages state
+                setMessages((prevMessages) =>
+                  prevMessages.filter((msg) => msg.id !== message.id)
+                );
+              } else {
+                console.log("Message not sent");
+              }
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        });
+
+        toast.dismiss(loadingtoast);
+
+        toast.success("Mensajes sincronizados", {
+          position: "bottom-center",
+        });
         setIsSyncing(false);
       });
     }
@@ -108,9 +145,9 @@ export const OfflineQueue = () => {
             key={index}
             className="border-gray-200 border-2 rounded-md p-4 bg-white shadow-md hover:shadow-lg transition-shadow duration-300 ease-in-out"
           >
-            <p className="text-lg font-semibold">{message.mensaje}</p>
+            <p className="text-lg font-semibold">{message.message}</p>
             <p className="text-gray-500 text-sm mt-2">
-              {message.nombre} | {message.claveFamiliar}
+              {message.name} | {message.secret}
             </p>
           </div>
         ))}
