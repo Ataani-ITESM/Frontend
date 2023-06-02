@@ -9,7 +9,9 @@ export default async function handler(req, res) {
   switch (method) {
     case "GET":
       try {
-        const posts = await Post.find({});
+        const posts = await Post.find({
+          secret: { $exists: false },
+        });
         res.status(200).json({ success: true, data: posts });
       } catch (error) {
         res.status(400).json({ success: false });
@@ -19,9 +21,6 @@ export default async function handler(req, res) {
       try {
         const body = req.body;
 
-        body.categories = body.categories
-          .split(",")
-          .map((category) => category.trim());
         const post = await Post.create(body);
 
         res.status(201).json({ success: true, data: post });

@@ -75,7 +75,7 @@ export default function Home() {
                     />
 
                     <button
-                      onClick={() => handleUnlock(post.id, post.secret)}
+                      onClick={() => handleUnlock(post.id, post.secret!)}
                       className="bg-green-600 text-white rounded-md py-1 font-bold"
                     >
                       Desbloquear

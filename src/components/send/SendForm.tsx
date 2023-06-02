@@ -1,16 +1,20 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
+import { checkServerConnection } from "@/utils";
 
 export const SendForm = () => {
   const [useKey, setUseKey] = useState(false);
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState<{
+    name?: string;
+    secret?: string;
+    message?: string;
+  }>({});
   const [loading, setLoading] = useState(false); // New loading state
+  const [isOnline, setIsOnline] = useState(true);
 
   const onKeyToggle = (e: any) => {
     setUseKey((cur) => !cur);
   };
-
-  const clearForm = () => setFormData({});
 
   const handleInputChange = (e: any) => {
     setFormData((cur) => ({
@@ -19,45 +23,59 @@ export const SendForm = () => {
     }));
   };
 
+  useEffect(() => {
+    const checkConnection = async () => {
+      const connected = await checkServerConnection(
+        "http://localhost:3000/api/hello"
+      );
+      setIsOnline(connected);
+    };
+
+    checkConnection();
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true); // Set loading to true when form is submitted
 
-    const postData = async () => {
-      return new Promise(async (resolve, reject) => {
-        try {
-          const response = await fetch("/api/posts", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(formData),
-          });
+    if (!isOnline) {
+      // open a database and create an object store
+      // const db = await openDB("messagesDB", 1, {
+      //   upgrade(db) {
+      //     db.createObjectStore("messages");
+      //   },
+      // });
 
-          setTimeout(async () => {
-            if (!response.ok) throw new Error("Error: " + response.status);
+      // // add the message to the store
+      // await db.add("messages", formData);
 
-            clearForm();
-            const jsonResponse = await response.json();
-            resolve(jsonResponse);
-          }, 1000); // Delay for 1 second
-        } catch (error) {
-          reject(error);
-        }
-      });
-    };
+      // // send a message to the service worker
+      // navigator.serviceWorker.controller?.postMessage("New message added");
 
-    toast.promise(postData(), {
-      loading: "creando publicación...",
-      success: (data) => {
-        setLoading(false); // Set loading to false when postData() has resolved
-        return "publicación creada con exito!";
-      },
-      error: (err) => {
-        setLoading(false); // Set loading to false if postData() errors out
-        return err.message;
-      },
-    });
+      // toast.success("Mensaje agregado a la cola");
+      // setLoading(false); // Set loading to false when form is submitted
+      // setFormData({});
+      return;
+    } else {
+      fetch("api/posts", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          toast.success("Mensaje publicado");
+        })
+        .catch((err) => {
+          toast.error("Error al publicar el mensaje");
+        });
+    }
+
+    alert(formData);
+    setLoading(false); // Set loading to false when form is submitted
+    setFormData({});
   };
 
   return (
@@ -114,22 +132,6 @@ export const SendForm = () => {
 
               <div className="col-span-6">
                 <label className="block text-xl font-medium leading-6 text-gray-900">
-                  Etiquetas
-                </label>
-                <input
-                  type="text"
-                  name="categories"
-                  id="categories"
-                  placeholder={`Escribe etiquetas separadas por una ","`}
-                  value={formData.categories || ""}
-                  onChange={handleInputChange}
-                  className="transition-all mt-2 block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-lg sm:leading-6 disabled:bg-slate-200 disabled:cursor-not-allowed"
-                  disabled={loading}
-                />
-              </div>
-
-              <div className="col-span-6">
-                <label className="block text-xl font-medium leading-6 text-gray-900">
                   Mensaje
                 </label>
                 <textarea
@@ -139,12 +141,22 @@ export const SendForm = () => {
                   value={formData.message || ""}
                   onChange={handleInputChange}
                   className="resize-none rounded-md border-0 mt-2 w-full p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-lg sm:leading-6 disabled:bg-slate-200 disabled:cursor-not-allowed transition-all"
-                  rows="7"
+                  rows={7}
                   disabled={loading}
                 />
               </div>
             </div>
           </div>
+          {isOnline ? (
+            <></>
+          ) : (
+            <div className="bg-gray-50 px-4 py-3 text-center sm:px-6">
+              <p className="text-sm text-gray-500">
+                Estás fuera de línea, el mensaje se enviará cuando tengas
+                conexión a internet.
+              </p>
+            </div>
+          )}
           <div className="bg-gray-50 px-4 py-3 text-center sm:px-6">
             <button
               type="submit"

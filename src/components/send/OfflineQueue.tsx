@@ -1,5 +1,7 @@
 import { openDB } from "idb";
+import { QuestionMarkCircleIcon } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
+import { checkServerConnection } from "@/utils";
 
 export const OfflineQueue = () => {
   const [messages, setMessages] = useState<any[]>([]);
@@ -45,17 +47,14 @@ export const OfflineQueue = () => {
   }, []);
 
   useEffect(() => {
-    const updateNetworkStatus = () => {
-      setIsOnline(navigator.onLine);
+    const checkConnection = async () => {
+      const connected = await checkServerConnection(
+        "http://localhost:3000/api/hello"
+      );
+      setIsOnline(connected);
     };
 
-    window.addEventListener("online", updateNetworkStatus);
-    window.addEventListener("offline", updateNetworkStatus);
-
-    return () => {
-      window.removeEventListener("online", updateNetworkStatus);
-      window.removeEventListener("offline", updateNetworkStatus);
-    };
+    checkConnection();
   }, []);
 
   useEffect(() => {
@@ -78,13 +77,23 @@ export const OfflineQueue = () => {
   return (
     <div className="mt-5">
       <h2 className="text-2xl font-bold">Cola de mensajes</h2>
-      <div className="flex items-center mt-2">
+      <div className="flex items-center mt-2 group">
         <div
           className={`h-3 w-3 rounded-full ${
             isOnline ? "bg-green-500" : "bg-red-500"
           }`}
         />
-        <div>&nbsp;{isOnline ? "Online" : "Offline"}</div>
+        <div className="ml-2">{isOnline ? "En línea" : "Fuera de línea"}</div>
+        <div className="relative">
+          <div className="ml-2 text-sm cursor-pointer">
+            <QuestionMarkCircleIcon className="h-4 w-4 text-gray-500 group-hover:text-gray-900 transition-all" />
+          </div>
+          <div className="absolute left-0 w-48 p-2 mt-2 text-sm text-white bg-black rounded opacity-0 group-hover:opacity-100">
+            {isOnline
+              ? "Al estar en línea, los mensajes se publicarán al sitio instantáneamente"
+              : "Se publicarán los mensajes en cuanto se obtenga conexión a internet."}
+          </div>
+        </div>
       </div>
       {isSyncing && <p>Sync in progress...</p>}
       <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">

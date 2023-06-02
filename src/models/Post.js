@@ -8,10 +8,6 @@ const PostSchema = new mongoose.Schema({
   secret: {
     type: String,
   },
-  categories: {
-    type: [String],
-    required: [true, "Please provide at least one category."],
-  },
   message: {
     type: String,
   },
