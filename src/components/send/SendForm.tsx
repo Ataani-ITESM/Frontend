@@ -25,9 +25,7 @@ export const SendForm = () => {
 
   useEffect(() => {
     const checkConnection = async () => {
-      const connected = await checkServerConnection(
-        "http://localhost:3000/api/hello"
-      );
+      const connected = await checkServerConnection("/api/hello");
       setIsOnline(connected);
     };
 
