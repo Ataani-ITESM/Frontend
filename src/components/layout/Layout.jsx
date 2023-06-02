@@ -122,7 +122,7 @@ export const Layout = ({ children }) => {
           <div className="flex min-h-0 flex-1 flex-col border-r border-gray-200 bg-white">
             <div className="flex flex-1 flex-col overflow-y-auto pt-5 pb-4">
               <div className="flex flex-shrink-0 items-center px-4">
-                <h1 className="font-bold text-2xl font-mono">A&apos;taani</h1>
+                <h1 className="font-extralight text-4xl">ꫤ</h1>
               </div>
               <nav className="mt-5 flex-1 space-y-1 bg-white px-2">
                 {navigation.map((item) => (
