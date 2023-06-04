@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { openDB } from "idb";
 import { v4 as uuidv4 } from "uuid";
+import { ThirdwebStorage } from "@thirdweb-dev/storage";
+
 
 export const SendForm = () => {
   const [useKey, setUseKey] = useState(false);
@@ -13,11 +15,19 @@ export const SendForm = () => {
   const [loading, setLoading] = useState(false); // New loading state
   const [isOnline, setIsOnline] = useState(true);
 
+  let imgFile: File | null = null
+
+  const storage = new ThirdwebStorage();
+
   const onKeyToggle = (e: any) => {
     setUseKey((cur) => !cur);
   };
 
   const handleInputChange = (e: any) => {
+    if(e.target.name === 'img'){
+      imgFile = e.target.files[0]
+      return
+    }
     setFormData((cur) => ({
       ...cur,
       [e.target.name]: e.target.value,
@@ -35,6 +45,7 @@ export const SendForm = () => {
     // initial online status
     setIsOnline(navigator.onLine);
 
+
     return () => {
       window.removeEventListener("online", handleOnlineStatusChange);
       window.removeEventListener("offline", handleOnlineStatusChange);
@@ -43,7 +54,25 @@ export const SendForm = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    
     setLoading(true); // Set loading to true when form is submitted
+    
+    let uri = ''
+    try {
+      if(imgFile !== null){
+        uri = (await storage.upload(imgFile));
+        uri = 'https://ipfs.io/ipfs/' + uri.split('//')[1]
+      }
+      console.log(uri)
+    } catch (error) {
+      console.log('Error uploading IPFS')
+    }
+    
+    setFormData((cur) => ({
+      ...cur
+    }));
+
+    const form = {...formData, img: uri}
 
     if (!isOnline) {
       // open a database and create an object store
@@ -53,11 +82,11 @@ export const SendForm = () => {
         },
       });
 
-      console.log("adding message to the store", formData);
+      console.log("adding message to the store", form);
 
       // add the message to the store
       const id = uuidv4();
-      await db.add("messages", { ...formData, id }, id);
+      await db.add("messages", { ...form, id }, id);
 
       // create a broadcast channel
       const broadcastChannel = new BroadcastChannel("messagesDB");
@@ -75,7 +104,7 @@ export const SendForm = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(form),
       })
         .then((res) => res.json())
         .then((data) => {
@@ -156,6 +185,20 @@ export const SendForm = () => {
                   rows={7}
                   disabled={loading}
                 />
+              </div>
+
+              <div className="col-span-6">
+                <label className="block text-xl font-medium leading-6 text-gray-900">
+                  Subir Imágen (IPFS)
+                </label>
+                <input
+                onChange={handleInputChange}
+                accept="image/png, image/jpeg"
+                name="img"
+                className="block p-1.5 w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none sm:text-lg sm:leading-6 disabled:bg-slate-200"
+                aria-describedby="file_input_help" id="file_input" type="file"/>
+                <p className="mt-1 text-sm text-gray-500" id="file_input_help">PNG o JPG.</p>
+
               </div>
             </div>
           </div>

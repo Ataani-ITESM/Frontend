@@ -8,13 +8,16 @@ const PostSchema = new mongoose.Schema({
   secret: {
     type: String,
   },
+  img:{
+    type: String
+  },
   message: {
     type: String,
   },
   createdAt: {
     type: Date,
     default: Date.now,
-  },
+  }
 });
 
 export default mongoose.models.Post || mongoose.model("Post", PostSchema);

@@ -8,13 +8,14 @@ type Post = {
   message: string;
   secret?: string;
   createdAt: string;
+  img: string;
 };
 
 const PostComponent = ({ post }: { post: Post }) => (
   <div className=" max-w-xl  bg-white border-b-2 pt-10 pb-20">
     <div className="flex items-center space-x-4">
       <img
-        src="https://via.placeholder.com/50"
+        src={post.img || "https://via.placeholder.com/50"}
         alt="Avatar"
         className="block mx-auto object-cover rounded-full h-10 w-10 "
       />
@@ -67,7 +68,7 @@ export default function Home() {
         <div className="w-2/3">
           {posts.map((post) => (
             <PostComponent key={post.id} post={post} />
-          ))}
+            ))}
         </div>
       </div>
     </Layout>
