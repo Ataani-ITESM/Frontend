@@ -4,7 +4,6 @@ import { openDB } from "idb";
 import { v4 as uuidv4 } from "uuid";
 import { ThirdwebStorage } from "@thirdweb-dev/storage";
 
-
 export const SendForm = () => {
   const [useKey, setUseKey] = useState(false);
   const [formData, setFormData] = useState<{
@@ -15,7 +14,7 @@ export const SendForm = () => {
   const [loading, setLoading] = useState(false); // New loading state
   const [isOnline, setIsOnline] = useState(true);
 
-  let imgFile: File | null = null
+  let imgFile: File | null = null;
 
   const storage = new ThirdwebStorage();
 
@@ -24,9 +23,9 @@ export const SendForm = () => {
   };
 
   const handleInputChange = (e: any) => {
-    if(e.target.name === 'img'){
-      imgFile = e.target.files[0]
-      return
+    if (e.target.name === "img") {
+      imgFile = e.target.files[0];
+      return;
     }
     setFormData((cur) => ({
       ...cur,
@@ -45,7 +44,6 @@ export const SendForm = () => {
     // initial online status
     setIsOnline(navigator.onLine);
 
-
     return () => {
       window.removeEventListener("online", handleOnlineStatusChange);
       window.removeEventListener("offline", handleOnlineStatusChange);
@@ -54,25 +52,25 @@ export const SendForm = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
+
     setLoading(true); // Set loading to true when form is submitted
-    
-    let uri = ''
+
+    let uri = "";
     try {
-      if(imgFile !== null){
-        uri = (await storage.upload(imgFile));
-        uri = 'https://ipfs.io/ipfs/' + uri.split('//')[1]
+      if (imgFile !== null) {
+        uri = await storage.upload(imgFile);
+        uri = "https://ipfs.io/ipfs/" + uri.split("//")[1];
       }
-      console.log(uri)
+      console.log(uri);
     } catch (error) {
-      console.log('Error uploading IPFS')
+      console.log("Error uploading IPFS");
     }
-    
+
     setFormData((cur) => ({
-      ...cur
+      ...cur,
     }));
 
-    const form = {...formData, img: uri}
+    const form = { ...formData, img: uri };
 
     if (!isOnline) {
       // open a database and create an object store
@@ -143,35 +141,6 @@ export const SendForm = () => {
               </div>
 
               <div className="col-span-6">
-                <span className="flex">
-                  <label className="block text-xl font-medium leading-6 text-gray-900">
-                    Clave familiar
-                  </label>
-                  <label className="ml-2 relative inline-flex items-center cursor-pointer">
-                    <input
-                      type="checkbox"
-                      value=""
-                      className="sr-only peer"
-                      onChange={onKeyToggle}
-                      checked={useKey}
-                      disabled={loading}
-                    />
-                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-300 dark:peer-focus:ring-green-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>{" "}
-                  </label>
-                </span>
-                <input
-                  type="text"
-                  disabled={!useKey || loading}
-                  name="secret"
-                  id="secret"
-                  placeholder="Escribe tu clave"
-                  value={formData.secret || ""}
-                  onChange={handleInputChange}
-                  className="transition-all mt-2 block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-lg sm:leading-6 disabled:bg-slate-200 disabled:cursor-not-allowed"
-                />
-              </div>
-
-              <div className="col-span-6">
                 <label className="block text-xl font-medium leading-6 text-gray-900">
                   Mensaje
                 </label>
@@ -192,13 +161,17 @@ export const SendForm = () => {
                   Subir Imágen (IPFS)
                 </label>
                 <input
-                onChange={handleInputChange}
-                accept="image/png, image/jpeg"
-                name="img"
-                className="block p-1.5 w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none sm:text-lg sm:leading-6 disabled:bg-slate-200"
-                aria-describedby="file_input_help" id="file_input" type="file"/>
-                <p className="mt-1 text-sm text-gray-500" id="file_input_help">PNG o JPG.</p>
-
+                  onChange={handleInputChange}
+                  accept="image/png, image/jpeg"
+                  name="img"
+                  className="block p-1.5 w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none sm:text-lg sm:leading-6 disabled:bg-slate-200"
+                  aria-describedby="file_input_help"
+                  id="file_input"
+                  type="file"
+                />
+                <p className="mt-1 text-sm text-gray-500" id="file_input_help">
+                  PNG o JPG.
+                </p>
               </div>
             </div>
           </div>
