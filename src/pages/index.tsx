@@ -71,7 +71,7 @@ export default function Home() {
       </Head>
 
       <div className="flex flex-col items-start">
-        <h1 className="text-4xl font-bold">Inicio</h1>
+        <h1 className="text-4xl font-bold">Inicio/Tuxt a meyaj</h1>
         <div className="w-full">
           {posts.map((post) => (
             <PostComponent key={post.id} post={post} />
