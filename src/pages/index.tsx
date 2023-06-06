@@ -8,13 +8,14 @@ type Post = {
   message: string;
   secret?: string;
   createdAt: string;
+  img: string;
 };
 
 const PostComponent = ({ post }: { post: Post }) => (
-  <div className=" max-w-xl  bg-white border-b-2 pt-10 pb-20">
+  <div className=" w-full bg-white border-b-2 pt-10 pb-20">
     <div className="flex items-center space-x-4">
       <img
-        src="https://via.placeholder.com/50"
+        src={post.img || "https://via.placeholder.com/50"}
         alt="Avatar"
         className="block mx-auto object-cover rounded-full h-10 w-10 "
       />
@@ -43,7 +44,14 @@ export default function Home() {
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-        const { data } = await response.json();
+        let { data } = await response.json();
+
+        data = data.sort((a, b) => {
+          const dateA = new Date(a.createdAt);
+          const dateB = new Date(b.createdAt);
+          return dateB - dateA;
+        });
+
         setPosts(data);
       } catch (error) {
         console.error("Fetching posts failed", error);
@@ -64,7 +72,7 @@ export default function Home() {
 
       <div className="flex flex-col items-start">
         <h1 className="text-4xl font-bold">Inicio</h1>
-        <div className="w-2/3">
+        <div className="w-full">
           {posts.map((post) => (
             <PostComponent key={post.id} post={post} />
           ))}
