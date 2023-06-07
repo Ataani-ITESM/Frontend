@@ -160,7 +160,7 @@ export const SendForm = () => {
 
               <div className="col-span-6">
                 <label className="block text-xl font-medium leading-6 text-gray-900">
-                  Subir imagen (IPFS)
+                  Subir imagen / Na'akal wíimbala' (IPFS)
                 </label>
                 <input
                   onChange={handleInputChange}
