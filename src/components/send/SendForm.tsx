@@ -92,7 +92,7 @@ export const SendForm = () => {
       // send a message to the channel
       broadcastChannel.postMessage("New message added");
 
-      toast.success("Mensaje agregado a la cola");
+      toast.success("Mensaje agregado a la cola/T'aan agregado u nej");
       setLoading(false); // Set loading to false when form is submitted
       setFormData({});
       return;
@@ -106,10 +106,10 @@ export const SendForm = () => {
       })
         .then((res) => res.json())
         .then((data) => {
-          toast.success("Mensaje publicado");
+          toast.success("Mensaje publicado/T'aan a'ala'an");
         })
         .catch((err) => {
-          toast.error("Error al publicar el mensaje");
+          toast.error("Error al publicar el mensaje/Ba'alo' ti' le publicar le k'uuben t'aano'");
         });
     }
 
@@ -125,13 +125,14 @@ export const SendForm = () => {
             <div className="grid grid-cols-6 gap-6">
               <div className="col-span-6">
                 <label className="block text-xl font-medium leading-6 text-gray-900">
-                  Nombre
+                  Nombre/ ka&apos;aba&apos;
+
                 </label>
                 <input
                   id="name"
                   type="text"
                   name="name"
-                  placeholder="Escribe tu nombre"
+                  placeholder="Escribe tu nombre/Ts'íibt a k'aaba'"
                   className="transition-all mt-2 block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-lg sm:leading-6 disabled:bg-slate-200 disabled:cursor-not-allowed"
                   value={formData.name || ""}
                   onChange={handleInputChange}
@@ -142,12 +143,12 @@ export const SendForm = () => {
 
               <div className="col-span-6">
                 <label className="block text-xl font-medium leading-6 text-gray-900">
-                  Mensaje
+                  Mensaje/ Ts&apos;íibo&apos;ob
                 </label>
                 <textarea
                   name="message"
                   id="message"
-                  placeholder="Escribe tu mensaje"
+                  placeholder="Escribe tu mensaje/Ts'íib a k'uuben t'aano'"
                   value={formData.message || ""}
                   onChange={handleInputChange}
                   className="resize-none rounded-md border-0 mt-2 w-full p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-lg sm:leading-6 disabled:bg-slate-200 disabled:cursor-not-allowed transition-all"
@@ -181,7 +182,7 @@ export const SendForm = () => {
             <div className="bg-gray-50 px-4 py-3 text-center sm:px-6">
               <p className="text-sm text-gray-500">
                 Estás fuera de línea, el mensaje se enviará cuando tengas
-                conexión a internet.
+                conexión a internet./  Táan a paach internet ichil, le k&apos;uuben t&apos;aano&apos; ku enviará ken a conexión internet.
               </p>
             </div>
           )}
@@ -191,7 +192,7 @@ export const SendForm = () => {
               className="inline-flex justify-center rounded-md bg-green-600 py-2 px-3 text-lg font-semibold text-white shadow-sm hover:bg-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-500 disabled:bg-slate-500 disabled:cursor-not-allowed transition-all"
               disabled={loading || !formData.name || !formData.message}
             >
-              Publicar mensaje
+              Publicar mensaje/ Publicar t&apos;aan
             </button>
           </div>
         </div>
