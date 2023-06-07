@@ -16,9 +16,8 @@ export default function Send() {
       </Head>
 
       <div>
-        <h1 className="text-2xl font-bold">Publicar mensaje</h1>
+        <h1 className="text-2xl font-bold">Publicar mensaje/Publicar t&apos;aan</h1>
         <SendForm />
-        <OfflineQueue />
       </div>
     </Layout>
   );
