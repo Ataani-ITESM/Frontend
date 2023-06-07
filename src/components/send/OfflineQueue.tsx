@@ -128,8 +128,8 @@ export const OfflineQueue = () => {
           </div>
           <div className="absolute left-0 w-48 p-2 mt-2 text-sm text-white bg-black rounded opacity-0 group-hover:opacity-100">
             {isOnline
-              ? "Al estar en línea, los mensajes se publicarán al sitio instantáneamente"
-              : "Se publicarán los mensajes en cuanto se obtenga conexión a internet."}
+              ? "Al estar en línea, los mensajes se publicarán al sitio instantáneamente/Yaan u yaantal ti' internet ichil, le mensajes ku publicarán ti' le ts'ono'oto' instantáneamente"
+              : "Se publicarán los mensajes en cuanto se obtenga conexión a internet./Ku publicarán le mensajes en cuanto ku obtenga conexión internet."}
           </div>
         </div>
       </div>
