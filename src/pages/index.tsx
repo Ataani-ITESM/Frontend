@@ -46,10 +46,10 @@ export default function Home() {
         }
         let { data } = await response.json();
 
-        data = data.sort((a, b) => {
+        data = data.sort((a: any, b: any) => {
           const dateA = new Date(a.createdAt);
           const dateB = new Date(b.createdAt);
-          return dateB - dateA;
+          return dateB.getTime() - dateA.getTime();
         });
 
         setPosts(data);

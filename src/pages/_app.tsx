@@ -23,7 +23,7 @@ export default function App({ Component, pageProps }: AppProps) {
     }
   }, []);
   return (
-    <ThirdwebProvider desiredChainId={chainId}>
+    <ThirdwebProvider activeChain={chainId}>
       <Component {...pageProps} />
       <Toaster />
     </ThirdwebProvider>
