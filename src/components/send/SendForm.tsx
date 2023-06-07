@@ -109,7 +109,9 @@ export const SendForm = () => {
           toast.success("Mensaje publicado/T'aan a'ala'an");
         })
         .catch((err) => {
-          toast.error("Error al publicar el mensaje/Ba'alo' ti' le publicar le k'uuben t'aano'");
+          toast.error(
+            "Error al publicar el mensaje/Ba'alo' ti' le publicar le k'uuben t'aano'"
+          );
         });
     }
 
@@ -126,7 +128,6 @@ export const SendForm = () => {
               <div className="col-span-6">
                 <label className="block text-xl font-medium leading-6 text-gray-900">
                   Nombre/ ka&apos;aba&apos;
-
                 </label>
                 <input
                   id="name"
@@ -159,7 +160,7 @@ export const SendForm = () => {
 
               <div className="col-span-6">
                 <label className="block text-xl font-medium leading-6 text-gray-900">
-                  Subir Imágen (IPFS)
+                  Subir imagen (IPFS)
                 </label>
                 <input
                   onChange={handleInputChange}
@@ -182,7 +183,9 @@ export const SendForm = () => {
             <div className="bg-gray-50 px-4 py-3 text-center sm:px-6">
               <p className="text-sm text-gray-500">
                 Estás fuera de línea, el mensaje se enviará cuando tengas
-                conexión a internet./  Táan a paach internet ichil, le k&apos;uuben t&apos;aano&apos; ku enviará ken a conexión internet.
+                conexión a internet./ Táan a paach internet ichil, le
+                k&apos;uuben t&apos;aano&apos; ku enviará ken a conexión
+                internet.
               </p>
             </div>
           )}
